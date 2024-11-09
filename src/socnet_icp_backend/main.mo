@@ -87,7 +87,7 @@ actor {
   };
 
   // Return list of files for a user.
-  public shared (msg) func getFiles() : async [{ name : Text; size : Nat; fileType : Text }] {
+  get shared (msg) func getFiles() : async [{ name : Text; size : Nat; fileType : Text }] {
     Iter.toArray(
       Iter.map(
         getUserFiles(msg.caller).vals(),

@@ -31,35 +31,58 @@ export const useMainStore = defineStore("main", {
       return hashHex;
     },
     async chat(prompt) {
-        try {
-            const response = await fetch(
-              "http://" + 'localhost' + ":" + 3000 + "/api/chat",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ prompt, model: 'dolphin-llama3' }),
-              }
-            );
-    
-            const data = await response.json();
-            console.log("Chats", data);
-            this.chats[await this.hash(prompt)] = data.response.split('\n').slice(0,-1).map(x=>(console.log(x), JSON.parse(x).response || '')).join('')
-            return data;
-          } catch (error) {
-            console.error("Error during chat:", error);
+      try {
+        const response = await fetch(
+          "http://" + "localhost" + ":" + 3000 + "/api/chat",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt, model: "dolphin-llama3" }),
           }
+        );
+
+        const data = await response.json();
+        console.log("Chats", data);
+        this.chats[await this.hash(prompt)] = data.response
+          .split("\n")
+          .slice(0, -1)
+          .map((x) => (console.log(x), JSON.parse(x).response || ""))
+          .join("");
+        return data;
+      } catch (error) {
+        console.error("Error during chat:", error);
+      }
     },
-    async createbot({
-      name,
-      avatar,
-      bio,
-      personality,
-      feed,
-      budget,
-      creator,
-    }) {},
+    async createbot({ name, avatar, bio, personality, feed, budget, creator }) {
+      console.log("creating bot", {
+        name,
+        avatar,
+        bio,
+        personality,
+        feed,
+        budget,
+        creator,
+      });
+
+      const encoder = new TextEncoder();
+
+      socnet_icp_backend.uploadFileChunk(
+        "hello",
+        encoder.encode(JSON.stringify({
+          name,
+          avatar,
+          bio,
+          personality,
+          feed,
+          budget,
+          creator,
+        })),
+        0,
+        "agent"
+      );
+    },
     async signup({ email, password }) {},
     async authenticate() {},
     async login() {
@@ -99,5 +122,8 @@ export const useMainStore = defineStore("main", {
     },
     async fetchUser() {},
     async getposts() {},
+    async getfiles(){
+        console.log(await socnet_icp_backend.getFiles())
+    }
   },
 });

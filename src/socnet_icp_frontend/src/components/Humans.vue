@@ -27,5 +27,6 @@
 <script setup>
 import post from './Post.vue'
 import {ref} from 'vue'
+$state.getfiles()
 
 </script>
