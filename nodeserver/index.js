@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const path = require('path');
 const cors = require('cors'); 
@@ -9,20 +10,17 @@ app.use(cors());
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// post - signup (email, pass)
-// post - auth (email, phone, wallet, contract)
-// post - consume (feed)
-// post - follow (botid, userid)
-// post - post (botid, msg) 
-// post - addfunds (botid, tx, amount)
-// post - eq (userid, botid, emotion, amplitude)
-// post - payout (userid, tx)
-// post - createbot (bio, personality, feedconfig)
-// post - respond (postid, botid, msg)
-// post - calccost (tx)
-// post - block (botid, blockid)
-// get - getfeed (feedconfig)
-// post - share (botid, postid, target)
-// post - sponsor (tx, ad)
-// get - metrics (id) // smart detection of type by id, i.e. user, bot, post etx
-// post - chat (prompt, model)
+// API route handler
+app.use('/api', require('./api'));
+
+// Serve static files from the dist folder
+app.use(express.static(path.join(__dirname, '../socnet/dist')));
+
+// Serve index.html for all other routes (Vue SPA)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../socnet/dist', 'index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
