@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { AuthClient } from "@dfinity/auth-client";
 import { createActor } from "declarations/socnet_icp_backend";
 import { canisterId } from "declarations/socnet_icp_backend/index.js";
+import { socnet_icp_backend } from "declarations/socnet_icp_backend/index";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
@@ -16,6 +17,7 @@ export const useMainStore = defineStore("main", {
     actor: null,
     isAuthenticated: false,
     errorMessage: null,
+    welcome: "",
   }),
   actions: {
     async hash(input) {
@@ -41,13 +43,16 @@ export const useMainStore = defineStore("main", {
     async signup({ email, password }) {},
     async authenticate() {},
     async login() {
-      console.log("logging in through ICP");
       const authClient = await AuthClient.create();
       const identityProvider =
         process.env.DFX_NETWORK === "ic"
           ? "https://identity.ic0.app" // Mainnet
           : "http://ctiya-peaaa-aaaaa-qaaja-cai.localhost:4943"; // Local
 
+      console.log(
+        "logging in through ICP",
+        await socnet_icp_backend.send_http_post_request()
+      );
       try {
         console.log({ authClient });
         await authClient.login({

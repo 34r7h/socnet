@@ -6,6 +6,7 @@
     </div>
     <div v-else>
         <pre style="text-align: left; overflow: scroll; max-width: 100vw;">{{ $state.user }}</pre>
+        <p>{{ $state.welcome }}</p>
     </div>
     <div>
         <h2>Spending</h2> 
