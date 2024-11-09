@@ -18,7 +18,16 @@ export const useMainStore = defineStore("main", {
     errorMessage: null,
   }),
   actions: {
-    async hash(input) {},
+    async hash(input) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(input);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+      return hashHex;
+    },
     async chat(prompt) {},
     async createbot({
       name,
@@ -32,16 +41,19 @@ export const useMainStore = defineStore("main", {
     async signup({ email, password }) {},
     async authenticate() {},
     async login() {
+      console.log("logging in through ICP");
       const authClient = await AuthClient.create();
       const identityProvider =
         process.env.DFX_NETWORK === "ic"
           ? "https://identity.ic0.app" // Mainnet
-          : "http://rdmx6-jaaaa-aaaaa-aaadq-cai.localhost:4943"; // Local
+          : "http://ctiya-peaaa-aaaaa-qaaja-cai.localhost:4943"; // Local
 
       try {
+        console.log({ authClient });
         await authClient.login({
           identityProvider,
           onSuccess: async () => {
+            console.log("successful login");
             const identity = authClient.getIdentity();
             const actor = createActor(canisterId, {
               agentOptions: {
@@ -50,6 +62,9 @@ export const useMainStore = defineStore("main", {
             });
             this.actor = actor;
             this.isAuthenticated = true;
+            let principal = identity.getPrincipal();
+            this.user = principal.toHex();
+            // console.log({ identity, actor, }, this.user.toHex())
           },
         });
       } catch (error) {
