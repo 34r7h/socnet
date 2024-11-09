@@ -4,7 +4,8 @@
     "@dfinity/candid": "^1.4.0",
     "@dfinity/principal": "^1.4.0",
     "pinia": "^2.1.6",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "vue-router": "latest"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
