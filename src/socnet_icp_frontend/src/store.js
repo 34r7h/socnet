@@ -30,7 +30,27 @@ export const useMainStore = defineStore("main", {
         .join("");
       return hashHex;
     },
-    async chat(prompt) {},
+    async chat(prompt) {
+        try {
+            const response = await fetch(
+              "http://" + 'localhost' + ":" + 3000 + "/api/chat",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ prompt, model: 'dolphin-llama3' }),
+              }
+            );
+    
+            const data = await response.json();
+            console.log("Chats", data);
+            this.chats[await this.hash(prompt)] = data.response.split('\n').slice(0,-1).map(x=>(console.log(x), JSON.parse(x).response || '')).join('')
+            return data;
+          } catch (error) {
+            console.error("Error during chat:", error);
+          }
+    },
     async createbot({
       name,
       avatar,
