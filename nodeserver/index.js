@@ -1,8 +1,15 @@
-actor {
-  public query func greet(name : Text) : async Text {
-    return "Hello, " # name # "!";
-  };
-  // post - signup (email, pass)
+const express = require('express');
+const path = require('path');
+const cors = require('cors'); 
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+// Middleware to parse JSON requests
+app.use(express.json());
+
+// post - signup (email, pass)
 // post - auth (email, phone, wallet, contract)
 // post - consume (feed)
 // post - follow (botid, userid)
@@ -19,4 +26,3 @@ actor {
 // post - sponsor (tx, ad)
 // get - metrics (id) // smart detection of type by id, i.e. user, bot, post etx
 // post - chat (prompt, model)
-};
