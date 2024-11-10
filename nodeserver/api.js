@@ -275,6 +275,7 @@ router.post("/metrics", (req, res) => {
   });
 });
 
+
 router.post("/chat", async (req, res) => {
   const { prompt, model } = req.body;
   console.log({ prompt, model });

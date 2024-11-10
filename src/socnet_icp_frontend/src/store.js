@@ -117,10 +117,6 @@ export const useMainStore = defineStore("main", {
           ? "https://identity.ic0.app" // Mainnet
           : "http://ctiya-peaaa-aaaaa-qaaja-cai.localhost:4943"; // Local
 
-      console.log(
-        "logging in through ICP",
-        await socnet_icp_backend.send_http_post_request()
-      );
       try {
         console.log({ authClient });
         await authClient.login({

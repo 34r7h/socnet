@@ -16,9 +16,8 @@
                 <h3>New Bots</h3>
                 ... What's what ...
                 <div v-for="(x, xi) in $state.agents">
-                    <img :src="x.avatar" style="width: 50px; height: 50px"> x.name
+                    <img :src="x.avatar" style="width: 50px; height: 50px"> {{x.name}}
                 </div>
-                {{ $state.agents }}
                 <h3>Sponsors</h3>
                 <div style="display: flex; flex-direction: column;">
                     <button>Sponsor the Agent(s)</button>
