@@ -32,9 +32,11 @@ export const useMainStore = defineStore("main", {
       return hashHex;
     },
     async chat(prompt) {
+        console.log({prompt});
+        
       // console.log(await socnet_icp_backend.send_http_post_request())
       try {
-        let response = await socnet_icp_backend.send_http_post_request();
+        let response = await socnet_icp_backend.send_http_post_request(JSON.stringify({prompt, model: 'dolphin-llama3'}));
         console.log({response});
         if (await response.includes('. See more info of the request sent at: https://')) {
             response = await response.slice(0, await response.indexOf('. See more info of the request sent at: https://'))

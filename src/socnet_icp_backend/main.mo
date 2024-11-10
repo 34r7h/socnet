@@ -232,7 +232,7 @@ public query func transform(raw : Types.TransformArgs) : async Types.CanisterHtt
     // 1. Write a JSON string
     // 2. Convert ?Text optional into a Blob, which is an intermediate reprepresentation before we cast it as an array of [Nat8]
     // 3. Convert the Blob into an array [Nat8]
-    let request_body_json: Text = "{ \"prompt\" : prompt, \"model\" : \"dolphin-llama3\" }";
+    let request_body_json: Text = prompt;
     let request_body_as_Blob: Blob = Text.encodeUtf8(request_body_json); 
     let request_body_as_nat8: [Nat8] = Blob.toArray(request_body_as_Blob); // e.g [34, 34,12, 0]
 
