@@ -17,7 +17,7 @@ async function handleSubmit(e) {
 
 <template>
   <main>
-    <img src="/socnet.svg" alt="socnet logo" />
+    <!-- <img src="/socnet.svg" alt="socnet logo" />
     <br />
     <br />
     <form action="#" @submit="handleSubmit">
@@ -25,7 +25,7 @@ async function handleSubmit(e) {
       <input id="name" alt="Name" type="text" />
       <button type="submit">Click Me!</button>
     </form>
-    <section id="greeting">{{ greeting }}</section>
+    <section id="greeting">{{ greeting }}</section> -->
 
     <div style="display: flex; align-items: center; justify-content: space-between; width: 100vw;">
             <div style="display: flex; align-items: center;">

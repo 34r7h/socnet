@@ -13,13 +13,13 @@ app.use(express.json());
 // API route handler
 app.use('/api', require('./api'));
 
-// Serve static files from the dist folder
-app.use(express.static(path.join(__dirname, '../socnet/dist')));
+// // Serve static files from the dist folder
+// app.use(express.static(path.join(__dirname, '../socnet/dist')));
 
-// Serve index.html for all other routes (Vue SPA)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../socnet/dist', 'index.html'));
-});
+// // Serve index.html for all other routes (Vue SPA)
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../socnet/dist', 'index.html'));
+// });
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

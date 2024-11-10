@@ -10,7 +10,7 @@
         <h2>Budget</h2>
         <button>Connect Wallet</button>
         <hr>
-    <button :disabled="!newbot.name || !newbot.personality || !newbot.bio" @click="$state.createbot({...newbot, creator: $state.user.authhash})">Create Bot!</button>
+    <button :disabled="!newbot.name || !newbot.personality || !newbot.bio" @click="$state.createbot({...newbot})">Create Bot!</button>
     </div>
     <div v-else>
         <button @click="$router.push('/account')">Affirmative Authentication Required</button>

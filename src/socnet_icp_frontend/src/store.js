@@ -6,6 +6,7 @@ import { socnet_icp_backend } from "declarations/socnet_icp_backend/index";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
+    agents: {},
     user: null,
     chats: {},
     posts: {},
@@ -31,19 +32,14 @@ export const useMainStore = defineStore("main", {
       return hashHex;
     },
     async chat(prompt) {
+      // console.log(await socnet_icp_backend.send_http_post_request())
       try {
-        const response = await fetch(
-          "http://" + "localhost" + ":" + 3000 + "/api/chat",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ prompt, model: "dolphin-llama3" }),
-          }
-        );
-
-        const data = await response.json();
+        let response = await socnet_icp_backend.send_http_post_request();
+        console.log({response});
+        if (await response.includes('. See more info of the request sent at: https://')) {
+            response = await response.slice(0, await response.indexOf('. See more info of the request sent at: https://'))
+        }
+        const data = JSON.parse(response);
         console.log("Chats", data);
         this.chats[await this.hash(prompt)] = data.response
           .split("\n")
@@ -54,31 +50,58 @@ export const useMainStore = defineStore("main", {
       } catch (error) {
         console.error("Error during chat:", error);
       }
+      //   try {
+      //     const response = await fetch(
+      //       "http://" + "localhost" + ":" + 3000 + "/api/chat",
+      //       {
+      //         method: "POST",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //         },
+      //         body: JSON.stringify({ prompt, model: "dolphin-llama3" }),
+      //       }
+      //     );
+
+      //     const data = await response.json();
+      //     console.log("Chats", data);
+      //     this.chats[await this.hash(prompt)] = data.response
+      //       .split("\n")
+      //       .slice(0, -1)
+      //       .map((x) => (console.log(x), JSON.parse(x).response || ""))
+      //       .join("");
+      //     return data;
+      //   } catch (error) {
+      //     console.error("Error during chat:", error);
+      //   }
     },
-    async createbot({ name, avatar, bio, personality, feed, budget, creator }) {
-      console.log("creating bot", {
-        name,
-        avatar,
-        bio,
-        personality,
-        feed,
-        budget,
-        creator,
-      });
-
-      const encoder = new TextEncoder();
-
-      socnet_icp_backend.uploadFileChunk(
-        "hello",
-        encoder.encode(JSON.stringify({
+    async createbot({ name, avatar, bio, personality, feed, budget }) {
+      console.log(
+        "creating bot",
+        {
           name,
           avatar,
           bio,
           personality,
           feed,
           budget,
-          creator,
-        })),
+        },
+        this.user
+      );
+
+      const encoder = new TextEncoder();
+      const content = JSON.stringify({
+        name,
+        avatar,
+        bio,
+        personality,
+        feed,
+        creator: this.user,
+      });
+      const hashid = this.hash(content);
+
+      socnet_icp_backend.uploadFileChunk(
+        await hashid,
+        encoder.encode(content),
         0,
         "agent"
       );
@@ -122,8 +145,28 @@ export const useMainStore = defineStore("main", {
     },
     async fetchUser() {},
     async getposts() {},
-    async getfiles(){
-        console.log(await socnet_icp_backend.getFiles())
-    }
+    async getfiles() {
+      const files = await socnet_icp_backend.getFiles();
+      console.log({ files });
+      files.map(async (x) => {
+        console.log("checking file", x);
+        let file = [];
+        let chunkcount = await socnet_icp_backend.getTotalChunks(x.name);
+        for (var i = 0; i < chunkcount; i++) {
+          var chunk = await socnet_icp_backend.getFileChunk(x.name, i);
+          console.log({ chunk });
+          file.push(...chunk.flat());
+        }
+        if (x.fileType == "agent") {
+          this.agents[x.name] = JSON.parse(
+            new TextDecoder().decode(new Uint8Array(file[0]))
+          );
+        }
+        console.log(
+          { file },
+          new TextDecoder().decode(new Uint8Array(file[0]))
+        );
+      });
+    },
   },
 });

@@ -87,7 +87,7 @@ actor {
   };
 
   // Return list of files for a user.
-  get shared (msg) func getFiles() : async [{ name : Text; size : Nat; fileType : Text }] {
+  public shared (msg) func getFiles() : async [{ name : Text; size : Nat; fileType : Text }] {
     Iter.toArray(
       Iter.map(
         getUserFiles(msg.caller).vals(),
@@ -204,7 +204,7 @@ public query func transform(raw : Types.TransformArgs) : async Types.CanisterHtt
 
 //PULIC METHOD
 //This method sends a POST request to a URL with a free API we can test.
-  public func send_http_post_request() : async Text {
+  public func send_http_post_request(prompt: Text) : async Text {
 
     //1. DECLARE IC MANAGEMENT CANISTER
     //We need this so we can use it to make the HTTP request
@@ -214,8 +214,8 @@ public query func transform(raw : Types.TransformArgs) : async Types.CanisterHtt
 
     // 2.1 Setup the URL and its query parameters
     //This URL is used because it allows us to inspect the HTTP request sent from the canister
-    let host : Text = "putsreq.com";
-    let url = "https://putsreq.com/aL1QS5IbaQd4NTqN3a81"; //HTTP that accepts IPV6
+    let host : Text = "5d45-83-118-49-64.ngrok-free.app";
+    let url = "https://5d45-83-118-49-64.ngrok-free.app/api/chat"; //HTTP that accepts IPV6
 
     // 2.2 prepare headers for the system http_request call
 
@@ -232,7 +232,7 @@ public query func transform(raw : Types.TransformArgs) : async Types.CanisterHtt
     // 1. Write a JSON string
     // 2. Convert ?Text optional into a Blob, which is an intermediate reprepresentation before we cast it as an array of [Nat8]
     // 3. Convert the Blob into an array [Nat8]
-    let request_body_json: Text = "{ \"name\" : \"Grogu\", \"force_sensitive\" : \"true\" }";
+    let request_body_json: Text = "{ \"prompt\" : prompt, \"model\" : \"dolphin-llama3\" }";
     let request_body_as_Blob: Blob = Text.encodeUtf8(request_body_json); 
     let request_body_as_nat8: [Nat8] = Blob.toArray(request_body_as_Blob); // e.g [34, 34,12, 0]
 
